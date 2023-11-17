@@ -1,33 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
 
-require_once "connection/connection.php";
+require_once("connection/config.php");
+$data = new Config();
 
-$config = [
-    'host' => 'localhost',
-    'database' => 'medical_records',
-    'user' => 'root',
-    'password' => ''
-];
-
-$mysqlConnection = new mysqlConnection(
-    $config['host'],
-    $config['database'],
-    $config['user'],
-    $config['password'],
-);
-
-$connection = $mysqlConnection->getConnection();
-
-$query = $connection->query("SELECT * FROM medical_records");
-
-$products = $query->fetchAll();
-
-
-// $delete = $connection->prepare("DELETE FROM medical_records WHERE ID=4");
-
-// $delete->execute();
+$records = $data->index();
 
 ?>
 
@@ -36,7 +12,7 @@ $products = $query->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>BMI | RMF</title>
     <style>
         table, td, th {
             border: 1px solid black;
@@ -44,7 +20,13 @@ $products = $query->fetchAll();
     </style>
 </head>
 <body>
-<table style="width:100%;">
+    <h1>Body Mass Index (BMI) and Relative Fat Mass (RFM) Category Calculator</h1>
+
+    <a href="create.php">Insert Data</a>
+
+    <br><br>
+
+    <table style="width:100%;">
         <thead>
             <tr>
                <th>No.</th>
@@ -58,28 +40,28 @@ $products = $query->fetchAll();
                <th>BMI Category</th>
                <th>RFM Score</th>
                <th>RFM Category</th>
-                <th>action</th>
+               <th>action</th>
             </tr>
         </thead>
         <tbody>
-            <?php
-            $no = 1;
-            ?>
-            <?php foreach ($products as $row) : ?>
+            <?php $no = 1; ?>
+            <?php foreach ($records as $record => $value) : ?>
                 <tr>
                     <td><?= $no++; ?></td>
-                    <td><?php echo $row["Name"]; ?></td>
-                    <td><?php echo $row["Age"]; ?></td>
-                    <td><?php echo $row["Gender"]; ?></td>
-                    <td><?php echo $row["Height(cm)"]; ?></td>
-                    <td><?php echo $row["Weight(kg)"]; ?></td>
-                    <td><?php echo $row["Waist_Size(cm)"]; ?></td>
-                    <td><?php echo $row["BMI_Score"]; ?></td>
-                    <td><?php echo $row["BMI_Category"]; ?></td>
-                    <td><?php echo $row["RFM_Score"]; ?></td>
-                    <td><?php echo $row["RFM_Category"]; ?></td>
+                    <td><?php echo $value["name"]; ?></td>
+                    <td><?php echo $value["age"]; ?></td>
+                    <td><?php echo $value["gender"]; ?></td>
+                    <td><?php echo $value["height"]; ?></td>
+                    <td><?php echo $value["weight"]; ?></td>
+                    <td><?php echo $value["waist_size"]; ?></td>
+                    <td><?php echo $value["bmi_score"]; ?></td>
+                    <td><?php echo $value["bmi_category"]; ?></td>
+                    <td><?php echo $value["rfm_score"]; ?></td>
+                    <td><?php echo $value["rfm_category"]; ?></td>
                     <td>
-
+                        <a href="#">Edit</a>
+                        |
+                        <a href="#">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
