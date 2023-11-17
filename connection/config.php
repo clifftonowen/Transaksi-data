@@ -193,10 +193,33 @@
             }
         }
 
+       public function fetchOne()
+       {
+        try {
+            $stm = $this->db->prepare("SELECT * FROM records WHERE ID=?");
+            $stm->execute([$this->id]);
+            return $stm->fetchAll();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
         public function update()
         {
             try {
-                $stm = $this->db->prepare("UPDATE records SET name=?, age=?, gender=?, height=?, weight=?, waist_size=? WHERE id=?");
+                $stm = $this->db->prepare("UPDATE records SET name=?, age=?, gender=?, height=?, weight=?, waist_size=?, bmi_score=?, bmi_category=?, rfm_score=?, rfm_category=? WHERE id=?");
+                $bmi = new BodyMassIndex();
+                $bmi->calculate($this->height, $this->weight);
+                $bmi->determineCategory();
+
+                $rfm = new RelativeFatMass();
+                $rfm->calculate($this->height, $this->waist_size, $this->gender);
+                $rfm->determineCategory();
+
+                $this->bmi_score = $bmi->score;
+                $this->bmi_category = $bmi->category;
+                $this->rfm_score = $rfm->score;
+                $this->rfm_category = $rfm->category;
+            
                 $stm->execute([
                     $this->name,
                     $this->age,
@@ -204,7 +227,12 @@
                     $this->height,
                     $this->weight,
                     $this->waist_size,
+                    $this->bmi_score,
+                    $this->bmi_category,
+                    $this->rfm_score,
+                    $this->rfm_category,
                     $this->id
+                    
                 ]);
             } catch (Exception $e) {
                 return $e->getMessage();

@@ -59,9 +59,9 @@ $records = $data->index();
                     <td><?php echo $value["rfm_score"]; ?></td>
                     <td><?php echo $value["rfm_category"]; ?></td>
                     <td>
-                        <a href="#">Edit</a>
+                        <a href="edit.php?id=<?= $value['id']; ?>" >Edit</a>
                         |
-                        <a href="#">Delete</a>
+                        <a href="delete.php?id=<?= $value['id'];?>&req=delete">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
